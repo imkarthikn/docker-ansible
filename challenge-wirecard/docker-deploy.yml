@@ -1,0 +1,67 @@
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: Creating a network
+      docker_network:
+        name: "{{ docker_network_name }}"
+
+    - name: Starting the webapp:{{image_version}}
+      docker_container:
+        name: webapp
+        image: "{{ docker_registry }}/webapp:{{ image_version }}"
+        pull: true
+        state: "{{ action }}"
+        restart: yes
+        ports:
+          - 8080:8080
+        networks:
+          - name: "{{ docker_network_name }}"
+      when: pull_from_dockreg
+
+    - name: Starting the ngnix:{{image_version}}
+      docker_container:
+        name: ngnix
+        image: "{{ docker_registry }}/ngnix:{{ image_version }}"
+        pull: true
+        state: "{{ action }}"
+        restart: yes
+        ports:
+          - 443:443
+        networks:
+          - name: "{{ docker_network_name }}"
+      when: pull_from_dockreg
+    
+    - name: Starting the webapp:{{image_version}}
+      docker_container:
+        name: webapp
+        image: "webapp:{{ image_version }}"
+        pull: false
+        state: "{{ action }}"
+        restart: yes
+        volumes: ../assets/devopschallenge.war /usr/local/tomcat/webapps/myapp.war
+        ports:
+          - 8080:8080
+        networks:
+          - name: "{{ docker_network_name }}"
+
+    - name: Show test output
+      shell: docker ps | grep -i webapp 
+      register: status
+      
+    - debug:
+        msg: "{{ status }}"
+
+    - name: Starting the ngnix:{{image_version}}
+      docker_container:
+        name: ngnix
+        image: "ngnix:{{ image_version }}"
+        pull: false
+        state: "{{ action }}"
+        restart: yes
+        ports:
+          - 443:443
+        networks:
+          - name: "{{ docker_network_name }}"
+       
+    
+

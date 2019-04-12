@@ -1,0 +1,2 @@
+- name: push docker image {{image_name}}:{{image_version}} to docker hub
+  shell: "docker push {{ docker_registry_username }}/{{ image_name }}:{{ image_version }}"
