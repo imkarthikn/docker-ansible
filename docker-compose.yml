@@ -1,0 +1,12 @@
+version: '3'
+services:
+  nginx:
+    image: imkarthikn/ngnix:1.0.2
+    container_name: reverse_proxy
+    ports:
+      - 443:443
+  webapp:
+    image: imkarthikn/webapp:1.0.0
+    container_name: webapp
+    ports:
+      - 8888:8080
