@@ -1,7 +1,7 @@
 - hosts: localhost
   connection: local
   tasks:
-    - name: Creating a network
+    - name: Creating docker network {{docker_network_name}}
       docker_network:
         name: "{{ docker_network_name }}"
 
@@ -38,18 +38,17 @@
         pull: false
         state: "{{ action }}"
         restart: yes
-        volumes: ../assets/devopschallenge.war /usr/local/tomcat/webapps/myapp.war
         ports:
           - 8080:8080
         networks:
           - name: "{{ docker_network_name }}"
 
-    - name: Show test output
+    - name: webapp:{{image_version}} container status
       shell: docker ps | grep -i webapp 
       register: status
       
     - debug:
-        msg: "{{ status }}"
+        msg: "{{ status.stdout_lines }}"
 
     - name: Starting the ngnix:{{image_version}}
       docker_container:
@@ -63,5 +62,20 @@
         networks:
           - name: "{{ docker_network_name }}"
        
-    
+    - name: ngnix:{{image_version}} container status
+      shell: docker ps | grep -i ngnix
+      register: status1
 
+    - debug:
+        msg: "{{ status1.stdout_lines }}"
+
+    - name: Post Deployment status check on https://localhost/hello
+      #shell: curl -kI https://localhost/hello
+      uri:
+         url: https://localhost/hello
+         #return_content: yes
+         validate_certs: no
+      register: url_status
+
+    - debug:
+        msg: "{{ url_status.status }}"        

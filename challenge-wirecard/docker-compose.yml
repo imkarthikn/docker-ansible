@@ -10,9 +10,9 @@ services:
     depends_on:
       - webapp
   webapp:
-    #image: imkarthikn/webapp:1.0.2
+    #image: tomcat:8.0.20-jre8
     build:
-      context: ../webapp
+     context: ../webapp
     container_name: webapp
     ports:
       - 8080:8080

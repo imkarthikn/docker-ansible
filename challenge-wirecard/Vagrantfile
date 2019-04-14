@@ -79,16 +79,16 @@ Vagrant.configure("2") do |config|
       #yum install epel-release git dkms wget kernel-headers-$(uname -r) kernel-devel gcc* make -y
   SHELL
 
+ config.vm.provision "shell", inline: <<-SHELL
+  SHELL
+
   config.vm.define "challange" do |web|
     web.vm.box = "centos/7"
-    config.vm.network "forwarded_port", guest: 8080, host: 8080,
-      auto_correct: true
-    config.vm.network "forwarded_port", guest: 443, host: 443,
-      auto_correct: true
+    config.vm.network(:forwarded_port, {:host=>8080, :guest=>8080})
+    config.vm.network(:forwarded_port, {:host=>443, :guest=>443})
+      auto_correct = true
 
     web.ssh.insert_key = false
-    #web.vm.network "private_network", type: "dhcp"
-    web.vm.synced_folder "workspace", "/host",mount_options: ["uid=1", "gid=1"]
     web.vm.synced_folder ".", "/vagrant", disabled: true
     web.vm.provider :virtualbox do |vb|
           vb.customize ["modifyvm", :id, "--memory", "2048"]
@@ -99,4 +99,5 @@ Vagrant.configure("2") do |config|
 
 
 end
+
 

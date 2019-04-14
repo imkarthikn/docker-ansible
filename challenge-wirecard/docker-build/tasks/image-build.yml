@@ -7,3 +7,4 @@
         tag: "{{ image_version }}"
         nocache: yes
   delegate_to: localhost
+
