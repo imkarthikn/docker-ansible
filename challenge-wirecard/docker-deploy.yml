@@ -1,6 +1,15 @@
 - hosts: localhost
   connection: local
   tasks:
+
+    - name: Docker status
+      shell: docker ps -q
+      register: dosts
+
+    - name: Docker clean
+      shell: docker stop $(docker ps -q)
+      when: dosts.stdout_lines
+
     - name: Creating docker network {{docker_network_name}}
       docker_network:
         name: "{{ docker_network_name }}"
