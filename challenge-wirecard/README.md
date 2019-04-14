@@ -9,7 +9,7 @@ docker-compose version 1.24.0, build 0aa5906
 docker hub account
 
 
-A short notes on how this implemenation works:
+# A short notes on how this implemenation works:
 
 1. Install VirtualBox in your windows machine
 2. checkout the source code url - git clone https://bitbucket.org/imkarthikn_kk/challenge.git
@@ -19,19 +19,19 @@ A short notes on how this implemenation works:
 6. Build WebServer and Reverse-Proxy container and push to docker hub.
 
    Docker build and push to docker docker reg
-   --------------------------------------------
+
    ( Provide your docker hub account credentials and docker tag version. )
 
    * ansible-playbook docker-build.yml --extra-vars "docker_push='true' docker_registry_username=<DOCKERHUB USERNAME> docker_registry_password=<DOCKERHUB PASSWORD> image_version='1.0.0'"
     
    Docker build in local and not push to docker docker reg  
-   --------------------------------------------------------
+   
    * ansible-playbook docker-build.yml --extra-vars "docker_push='false' image_version='1.0.0'"
 
 7. Deploy the docker container to host , pull docker image from docker reg or local.
 
    Docker deploy from docker reg
-   -------------------------------
+   
 
    ( Provide dockerhub username <DOCKERHUB USERNAME> )
 
@@ -39,7 +39,7 @@ A short notes on how this implemenation works:
 
 
    Docker deploy from host 
-   ---------------------------
+   
    
    * ansible-playbook docker-deploy.yml --extra-vars "pull_from_dockreg=false local=ture action=started docker_network_name=network1 image_version=1.0.0"
 
@@ -54,7 +54,7 @@ A short notes on how this implemenation works:
 
 9. open your host browser and access the below link 
 
-  ** http://localhost:8080/devopschalange/hello **
+  ** http://localhost:8080/devopschallenge/hello **
 
   ** https://localhost/hello **
 
