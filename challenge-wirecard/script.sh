@@ -16,4 +16,4 @@ sudo systemctl start docker
 sudo systemctl enable docker
 sudo /bin/pip install --upgrade pip
 sudo /bin/pip install docker-compose
-
+sudo cd /usr/local/src && git clone https://bitbucket.org/imkarthikn_kk/challenge.git
