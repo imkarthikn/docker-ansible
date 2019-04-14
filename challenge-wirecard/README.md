@@ -41,7 +41,7 @@ docker hub account
    Docker deploy from host 
    
    
-   * ansible-playbook docker-deploy.yml --extra-vars "pull_from_dockreg=false local=ture action=started docker_network_name=network1 image_version=1.0.0"
+   * ansible-playbook docker-deploy.yml --extra-vars "pull_from_dockreg=false local=true action=started docker_network_name=network1 image_version=1.0.0"
 
 8. Even we can use docker docker-compose to started the application in local
 
