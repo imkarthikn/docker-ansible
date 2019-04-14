@@ -1,0 +1,18 @@
+version: '3'
+services:
+  nginx:
+    #image: imkarthikn/ngnix:1.0.2
+    build:
+      context: ./ngnix
+    container_name: reverse_proxy
+    ports:
+      - 443:443
+    depends_on:
+      - webapp
+  webapp:
+    #image: tomcat:8.0.20-jre8
+    build:
+     context: ./webapp
+    container_name: webapp
+    ports:
+      - 8080:8080

@@ -1,0 +1,92 @@
+- hosts: localhost
+  connection: local
+  tasks:
+
+    - name: Docker status
+      shell: docker ps -q
+      register: dosts
+
+    - name: Docker clean
+      shell: docker stop $(docker ps -q)
+      when: dosts.stdout_lines
+
+    - name: Creating docker network {{docker_network_name}}
+      docker_network:
+        name: "{{ docker_network_name }}"
+
+    - name: Starting the webapp:{{image_version}}
+      docker_container:
+        name: webapp
+        image: "{{ docker_registry }}/webapp:{{ image_version }}"
+        pull: true
+        state: "{{ action }}"
+        restart: yes
+        ports:
+          - 8080:8080
+        networks:
+          - name: "{{ docker_network_name }}"
+      when: pull_from_dockreg
+
+    - name: Starting the ngnix:{{image_version}}
+      docker_container:
+        name: ngnix
+        image: "{{ docker_registry }}/ngnix:{{ image_version }}"
+        pull: true
+        state: "{{ action }}"
+        restart: yes
+        ports:
+          - 443:443
+        networks:
+          - name: "{{ docker_network_name }}"
+      when: pull_from_dockreg
+    
+    - name: Starting the webapp:{{image_version}}
+      docker_container:
+        name: webapp
+        image: "webapp:{{ image_version }}"
+        pull: false
+        state: "{{ action }}"
+        restart: yes
+        ports:
+          - 8080:8080
+        networks:
+          - name: "{{ docker_network_name }}"
+      when: local
+
+    - name: webapp:{{image_version}} container status
+      shell: docker ps | grep -i webapp 
+      register: status
+      
+    - debug:
+        msg: "{{ status.stdout_lines }}"
+
+    - name: Starting the ngnix:{{image_version}}
+      docker_container:
+        name: ngnix
+        image: "ngnix:{{ image_version }}"
+        pull: false
+        state: "{{ action }}"
+        restart: yes
+        ports:
+          - 443:443
+        networks:
+          - name: "{{ docker_network_name }}"
+      when: local
+       
+    - name: ngnix:{{image_version}} container status
+      shell: docker ps | grep -i ngnix
+      register: status1
+
+    - debug:
+        msg: "{{ status1.stdout_lines }}"
+
+    - name: Post Deployment status check on https://localhost/hello
+      #shell: curl -kI https://localhost/hello
+      uri:
+         url: https://localhost/hello
+         #return_content: yes
+         validate_certs: no
+      register: url_status
+
+    - debug:
+        msg: "{{ url_status.status }}"        

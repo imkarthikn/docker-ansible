@@ -1,0 +1,10 @@
+---
+- name: Build the Image "{{ image_name }}"
+  run_once: true
+  docker_image:
+        path: "{{ docker_file_path }}"
+        name: "{{ docker_registry_username }}/{{ image_name }}"
+        tag: "{{ image_version }}"
+        nocache: yes
+  delegate_to: localhost
+
