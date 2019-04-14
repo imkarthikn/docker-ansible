@@ -3,7 +3,7 @@ services:
   nginx:
     #image: imkarthikn/ngnix:1.0.2
     build:
-      context: ../ngnix
+      context: ./ngnix
     container_name: reverse_proxy
     ports:
       - 443:443
@@ -12,7 +12,7 @@ services:
   webapp:
     #image: tomcat:8.0.20-jre8
     build:
-     context: ../webapp
+     context: ./webapp
     container_name: webapp
     ports:
       - 8080:8080
